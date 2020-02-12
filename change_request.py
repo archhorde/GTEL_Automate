@@ -53,6 +53,14 @@ class MyPrompt(Cmd):
         print("Disconnected from router, goodbye")
         return True
 
+    def do_shutdown_interface(self,arg):
+        """Shutsdown an interface"""
+        global net_connect
+
+        interface = input("Which interface do you want to shutdown? Ex: int gi0/0/0, te0/0/2\n")
+        output = net_connect.send_command('shut ' + interface)
+        print(output)
+
 def main():
 
     prompt = MyPrompt()

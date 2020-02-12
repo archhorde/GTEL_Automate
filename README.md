@@ -8,7 +8,7 @@ Show run
 Show log
 login
 bye/logout
-chane speed/duplex on interface
+change speed/duplex on interface
 
 Clone the project with the below command:
 
