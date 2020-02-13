@@ -1,10 +1,13 @@
 from netmiko import ConnectHandler
 from cmd import Cmd
 
+#Class for main command loop functions.
 class MyPrompt(Cmd):
 
     intro = "First action must be to login to a router. Last action must be to exit."
     net_connect = ''
+
+    ## TODO: Write show run, show log to file, clear counters, ping source
 
     def do_show_run(self,args):
         """Prints the running config"""
@@ -38,12 +41,27 @@ class MyPrompt(Cmd):
         global net_connect
 
         interface = input("Which interface do you want to change? Ex: int gi0/0/0, te0/0/2\n")
-        speed = input("What do you want the speed to be?\n")
-        duplex = input("What do you want the duplex to be?\n")
+        speed = input("What do you want the speed to be? If this should not change enter n/a, if auto type auto\n")
+        duplex = input("What do you want the duplex to be? If this should not change enter n/a, if auto type auto\n")
 
-        config_commands = [interface,speed]
-        output = net_connect.send_config_set(config_commands)
-        print(output)
+        if speed == 'n/a':
+            duplex = 'duplex ' + duplex
+            config_commands = [interface,duplex]
+            output = net_connect.send_config_set(config_commands)
+            print(output)
+        elif speed == 'auto' and duplex == 'auto':
+            duplex = 'duplex ' + duplex
+            speed = 'speed ' + speed
+            config_commands = [interface,speed,duplex]
+            output = net_connect.send_config_set(config_commands)
+            print(output)
+        elif duplex == 'n/a':
+            speed = 'speed ' + speed
+            config_commands = [interface,speed]
+            output = net_connect.send_config_set(config_commands)
+            print(output)
+        else:
+            print("Must change at least speed or duplex")
 
     def do_bounce_interface(self,arg):
         """Shuts then no shut an interface"""
@@ -61,6 +79,7 @@ class MyPrompt(Cmd):
         print("Disconnected from router, goodbye")
         return True
 
+#Main loop of program
 def main():
 
     prompt = MyPrompt()
