@@ -4,7 +4,6 @@ from cmd import Cmd
 class MyPrompt(Cmd):
 
     intro = "First action must be to login to a router. Last action must be to exit."
-    ROUTER = ''
     net_connect = ''
 
     def do_show_run(self,args):
@@ -46,20 +45,21 @@ class MyPrompt(Cmd):
         output = net_connect.send_config_set(config_commands)
         print(output)
 
+    def do_bounce_interface(self,arg):
+        """Shuts then no shut an interface"""
+        global net_connect
+
+        interface = input("Which interface do you want to bounce? Ex: int gi0/0/0, int te0/0/2\n")
+        int_bounce = [interface,'shut','no shut']
+        output = net_connect.send_config_set(int_bounce)
+        print(output)
+
     def do_bye(self, arg):
         """Logs out of a router and exits the command shell"""
         global net_connect
         net_connect.disconnect()
         print("Disconnected from router, goodbye")
         return True
-
-    def do_shutdown_interface(self,arg):
-        """Shutsdown an interface"""
-        global net_connect
-
-        interface = input("Which interface do you want to shutdown? Ex: int gi0/0/0, te0/0/2\n")
-        output = net_connect.send_command('shut ' + interface)
-        print(output)
 
 def main():
 
